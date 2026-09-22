@@ -14,31 +14,53 @@ class PdoOrderRepository implements OrderRepositoryInterface
 {
     public function __construct(private readonly PDO $pdo) {}
 
-    public function save(Order $order): void
-    {
-        $existing = $this->findById($order->id);
-
-        $sql = $existing instanceof \Ttpryg\OrderEngine\Entities\Order
-            ? 'UPDATE orders SET order_number = :order_number, customer_type = :customer_type, customer_id = :customer_id, status = :status, currency = :currency, subtotal = :subtotal, discount_total = :discount_total, tax_total = :tax_total, shipping_total = :shipping_total, grand_total = :grand_total, note = :note, updated_at = :updated_at WHERE id = :id'
-            : 'INSERT INTO orders (id, order_number, customer_type, customer_id, status, currency, subtotal, discount_total, tax_total, shipping_total, grand_total, note, created_at, updated_at) VALUES (:id, :order_number, :customer_type, :customer_id, :status, :currency, :subtotal, :discount_total, :tax_total, :shipping_total, :grand_total, :note, :created_at, :updated_at)';
+    public function save(Order $order): void                                                                                                 
+    {                                                                                                                                        
+        $existing = $this->findById($order->id);                                                                                             
+                                                                                                                                             
+        if ($existing instanceof \Ttpryg\OrderEngine\Entities\Order) {                                                                       
+            $sql = 'UPDATE orders SET order_number = :order_number, customer_type = :customer_type, customer_id = :customer_id, status =     
+:status, currency = :currency, subtotal = :subtotal, discount_total = :discount_total, tax_total = :tax_total, shipping_total = :shipping_total,
+grand_total = :grand_total, note = :note, updated_at = :updated_at WHERE id = :id';                                                            
+            $params = [                                                                                                                      
+                'id' => $order->id,                                                                                                          
+                'order_number' => $order->orderNumber,                                                                                       
+                'customer_type' => $order->customerType,
+                'customer_id' => $order->customerId,
+                'status' => $order->status->value,
+                'currency' => $order->currency,
+                'subtotal' => $order->subtotal,
+                'discount_total' => $order->discountTotal,
+                'tax_total' => $order->taxTotal,
+                'shipping_total' => $order->shippingTotal,
+                'grand_total' => $order->grandTotal,
+                'note' => $order->note,
+                'updated_at' => $order->updatedAt->format('Y-m-d H:i:s'),
+            ];
+        } else {
+            $sql = 'INSERT INTO orders (id, order_number, customer_type, customer_id, status, currency, subtotal, discount_total, tax_total, 
+shipping_total, grand_total, note, created_at, updated_at) VALUES (:id, :order_number, :customer_type, :customer_id, :status, :currency,       
+:subtotal, :discount_total, :tax_total, :shipping_total, :grand_total, :note, :created_at, :updated_at)';
+            $params = [
+                'id' => $order->id,
+                'order_number' => $order->orderNumber,
+                'customer_type' => $order->customerType,
+                'customer_id' => $order->customerId,
+                'status' => $order->status->value,
+                'currency' => $order->currency,
+                'subtotal' => $order->subtotal,
+                'discount_total' => $order->discountTotal,
+                'tax_total' => $order->taxTotal,
+                'shipping_total' => $order->shippingTotal,
+                'grand_total' => $order->grandTotal,
+                'note' => $order->note,
+                'created_at' => $order->createdAt->format('Y-m-d H:i:s'),
+                'updated_at' => $order->updatedAt->format('Y-m-d H:i:s'),
+            ];
+        }
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
-            'id' => $order->id,
-            'order_number' => $order->orderNumber,
-            'customer_type' => $order->customerType,
-            'customer_id' => $order->customerId,
-            'status' => $order->status->value,
-            'currency' => $order->currency,
-            'subtotal' => $order->subtotal,
-            'discount_total' => $order->discountTotal,
-            'tax_total' => $order->taxTotal,
-            'shipping_total' => $order->shippingTotal,
-            'grand_total' => $order->grandTotal,
-            'note' => $order->note,
-            'created_at' => $order->createdAt->format('Y-m-d H:i:s'),
-            'updated_at' => $order->updatedAt->format('Y-m-d H:i:s'),
-        ]);
+        $stmt->execute($params);
     }
 
     public function findById(string $id): ?Order
