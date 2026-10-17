@@ -28,3 +28,12 @@ jobs:
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit
+
+      - name: Run Pint (code style)
+        run: vendor/bin/pint --test src tests
+
+      - name: Run Rector (dry-run)
+        run: vendor/bin/rector process --dry-run
+
+      - name: Run PHPStan (static analysis)
+        run: vendor/bin/phpstan analyse --no-progress

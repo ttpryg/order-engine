@@ -40,6 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New public getters for the encapsulated calculation properties: `Order::subtotal()`, `discountTotal()`, `taxTotal()`, `shippingTotal()`, `grandTotal()`; `OrderItem::quantity()`, `unitPrice()`, `discountTotal()`, `taxTotal()`, `subtotal()`.
 - New official mutators replacing raw property writes: `OrderItem::updateQuantity()` (validates ≥ 1, recomputes the subtotal, bumps `updatedAt`) and `OrderItem::setSubtotal()` (write path reserved for `OrderCalculationService`).
 - **Breaking (dev tooling)**: removed the `web` (Nginx) service from `docker-compose.yml` and deleted `.docker/nginx/` — this package is a pure **library** (`"type": "library"`), and the Nginx config pointed at a nonexistent `public/` directory; Docker now runs only the PHP CLI tooling container for tests/linting.
+- Static analysis is now a first-class citizen: `phpstan/phpstan ^2.2` added to `require-dev` with a `phpstan.neon` config (level 6, `src/`, `.phpstan.cache`), `composer analyse` and aggregate `composer check` scripts, and the last two `missingType.iterableValue` errors in `PdoOrderAddressRepository::mapToEntity()` / `PdoOrderHistoryRepository::mapToEntity()` fixed with `@param array<string, mixed> $row` — **PHPStan level 6 now reports zero errors**.
+- CI (`.github/workflows/tests.yml`) now gates every push/PR on PHP 8.1–8.3 with four checks: PHPUnit, Pint (`--test`), Rector (`--dry-run`), and PHPStan.
 
 ### Changed
 
