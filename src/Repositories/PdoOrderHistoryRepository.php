@@ -41,6 +41,9 @@ class PdoOrderHistoryRepository implements OrderHistoryRepositoryInterface
         return array_map($this->mapToEntity(...), $rows);
     }
 
+    /**
+     * @param  array<string, mixed>  $row
+     */
     private function mapToEntity(array $row): OrderHistory
     {
         return new OrderHistory(

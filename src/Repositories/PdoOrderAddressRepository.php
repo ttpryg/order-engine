@@ -77,6 +77,9 @@ class PdoOrderAddressRepository implements OrderAddressRepositoryInterface
         return $stmt->execute(['id' => $id]);
     }
 
+    /**
+     * @param  array<string, mixed>  $row
+     */
     private function mapToEntity(array $row): OrderAddress
     {
         return new OrderAddress(

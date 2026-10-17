@@ -371,11 +371,17 @@ Run PHPUnit test suite:
 vendor/bin/phpunit
 ```
 
+Or run the full quality gate (tests, Pint, Rector dry-run, PHPStan level 6 — zero errors):
+
+```bash
+composer check
+```
+
 Or using Docker Compose (this package is a **library** — Docker only runs the PHP CLI tooling container for tests/linting, no web server):
 
 ```bash
 docker compose up -d
-docker compose exec app vendor/bin/phpunit
+docker compose exec app composer check
 ```
 
 ---
