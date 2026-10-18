@@ -6,7 +6,7 @@ namespace Ttpryg\OrderEngine\Exceptions;
 
 use RuntimeException;
 
-class OrderNotFoundException extends RuntimeException
+class OrderNotFoundException extends RuntimeException implements ExceptionInterface
 {
     public static function forId(string $id): self
     {

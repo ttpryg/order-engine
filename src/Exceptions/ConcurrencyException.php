@@ -6,7 +6,7 @@ namespace Ttpryg\OrderEngine\Exceptions;
 
 use RuntimeException;
 
-class ConcurrencyException extends RuntimeException
+class ConcurrencyException extends RuntimeException implements ExceptionInterface
 {
     public static function forOrder(string $orderId, int $expectedVersion): self
     {
