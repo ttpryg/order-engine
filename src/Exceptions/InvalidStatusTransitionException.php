@@ -7,7 +7,7 @@ namespace Ttpryg\OrderEngine\Exceptions;
 use RuntimeException;
 use Ttpryg\OrderEngine\Enums\OrderStatus;
 
-class InvalidStatusTransitionException extends RuntimeException
+class InvalidStatusTransitionException extends RuntimeException implements ExceptionInterface
 {
     public static function create(OrderStatus $from, OrderStatus $to): self
     {
